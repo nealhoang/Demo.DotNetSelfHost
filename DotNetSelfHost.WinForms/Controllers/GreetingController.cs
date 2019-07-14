@@ -3,7 +3,7 @@
 namespace DotNetSelfHost.WinForms.Controllers
 {
     [Route("/hello")]
-    public class GreetingController
+    public class GreetingController : ControllerBase
     {
         [HttpGet]
         public IActionResult Get()
@@ -14,10 +14,22 @@ namespace DotNetSelfHost.WinForms.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] string name)
+        public IActionResult Post([FromBody] EventInfo eventInfo)
         {
-            Program.Form.NameText = name;
-            return new NoContentResult();
+            Program.Form.NameText = eventInfo.User.Name;
+            return CreatedAtAction(nameof(Get), eventInfo.User.Name);
         }
+    }
+
+    public class EventInfo
+    {
+        public string Event { get; set; }
+        public User User { get; set; }
+    }
+
+    public class User
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }
